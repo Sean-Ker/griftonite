@@ -1,9 +1,8 @@
-import './styles/globals.css';
+import '../styles/globals.css';
 
 import { Inter } from 'next/font/google';
 import { Suspense } from 'react';
 import Nav from '../components/nav';
-import Toast from '../components/toast';
 
 
 const inter = Inter({ subsets: ['latin'] });
@@ -25,7 +24,7 @@ export default async function RootLayout({
           <Nav />
         </Suspense>
         {children}
-        <Toast />
+        {/* <Toast /> */}
       </body>
     </html>
   );
