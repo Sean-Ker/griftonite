@@ -5,13 +5,14 @@ const {
 const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { expect } = require("chai");
 
-describe("PostTrackerV1", function() {
+describe("PostTrackerV2", function() {
     async function deployEmpty() {
         const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
         const [owner, otherAccount] = await ethers.getSigners();
-        const PostTracker = await ethers.getContractFactory("PostTrackerV1");
+        const PostTracker = await ethers.getContractFactory("PostTrackerV2");
         //const postTracker = await PostTracker.deploy(ZERO_ADDRESS, []);
-        const postTracker = await PostTracker.deploy();
+        //const postTracker = await PostTracker.deploy();
+        const postTracker = await PostTracker.deploy(ZERO_ADDRESS);
 
         return { postTracker, owner, otherAccount };
     }
@@ -29,13 +30,18 @@ describe("PostTrackerV1", function() {
         it("New post CID should be returned on getPostsInThread", async function() {
             const {postTracker, owner} = await loadFixture(deployEmpty);
             await postTracker.newPost("random_cid", owner.address);
-            expect(await postTracker.getPostsInThread(owner.address, 0)).to.deep.equal(["random_cid"]);
+            const post_time = await time.latest();
+            await time.increase(100);
+            expect(await postTracker.getPostsInThread(owner.address, 0)).to.deep.equal([["random_cid", post_time, owner.address, 0n]]);
         });
         it("New reply CID should be returned on getPostsInThread", async function() {
             const {postTracker, owner} = await loadFixture(deployEmpty);
             await postTracker.newPost("random_cid", owner.address);
-            await postTracker["newPost(string, address, uint)"]("random_cid2", owner.address, 0);
-            expect(await postTracker.getPostsInThread(owner.address, 0)).to.deep.equal(["random_cid", "random_cid2"]);
+            const post_time = await time.latest();
+            await postTracker["newReply(string, address, uint)"]("random_cid2", owner.address, 0);
+            const reply_time = await time.latest();
+            expect(await postTracker.getPostsInThread(owner.address, 0)).to.deep.equal([["random_cid", post_time, owner.address, 0n], 
+            ["random_cid2", reply_time, owner.address, 1n]]);
         });
     });
 });
