@@ -6,8 +6,10 @@
 // global scope, and execute the script.
 const hre = require("hardhat");
 
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
 async function main() {
-  const postTracker = await hre.ethers.deployContract("PostTrackerV1");
+  const postTracker = await hre.ethers.deployContract("PostTrackerV2", [hre.ethers.ZeroAddress, hre.ethers.ZeroAddress]);
 
   await postTracker.waitForDeployment();
 

@@ -4,8 +4,9 @@ pragma solidity ^0.8.9;
 // i.e. have a constructor for the singleton that receives a contract address for the EAS contract,
 // and if that's null then no EAS attestation is created
 
-import {IEAS} from "./IEAS.sol";
-import {Attestation} from "./Common.sol";
+import {IEAS} from "./interfaces/IEAS.sol";
+import {Attestation} from "./interfaces/Common.sol";
+import {IWorldcoinVerifier} from "./interfaces/IWorldcoinVerifier.sol";
 
 // Plan: one singleton contract that handles all grifter addresses
 contract PostTrackerV2{
@@ -22,10 +23,9 @@ contract PostTrackerV2{
     }
 
     address easAddr;
+    address worldVerifier;
 
     address owner;
-
-    //address worldId
 
     // tells you how many threads are associated with this user
     mapping (address => uint) numThreadsUnderAddr;
@@ -37,6 +37,7 @@ contract PostTrackerV2{
     // index as [address][threadnum][postnum] = Post reference
     mapping (address => mapping (uint => mapping (uint => Post))) postObj;
 
+    mapping (address => mapping (uint => mapping (uint256 => bool))) cosigner_nullifiers;
     // need a head for the upper list
     // and each element of that list will point to a head of a different list
 
@@ -86,6 +87,22 @@ contract PostTrackerV2{
         return newPostObj;
     }
 
+    function newCosign(string calldata _cid, address _account, uint threadNum, address signal,
+        uint256 root,
+        uint256 nullifierHash,
+        uint256[8] calldata proof
+    ) public returns (Post memory){
+        require(worldVerifier != address(0), "cannot cosign without a valid WorldcoinVerifier");
+        IWorldcoinVerifier(worldVerifier).verifyProof(signal, root, nullifierHash, proof);
+        Post storage newPostObj = postObj[_account][threadNum][numPostsInThread[_account][threadNum]];
+        newPostObj.cid = _cid;
+        newPostObj.timestamp = block.timestamp;
+        newPostObj.poster = msg.sender;
+        newPostObj.postType = Type.cosign;
+        ++numPostsInThread[_account][threadNum];
+        return newPostObj;
+    }
+
 
     function getNumThreads(address _account) public view returns (uint){
         return numThreadsUnderAddr[_account];
@@ -99,11 +116,16 @@ contract PostTrackerV2{
         return posts;
     }
     // TODO: new function that uses EAS
-    constructor(address _easAddr) {
+    constructor(address _easAddr, address _worldVerifier) {
         easAddr = _easAddr;
+        worldVerifier = _worldVerifier;
     }
 
     function updateEAS(address newEasAddr) public ownerOnly {
         easAddr = newEasAddr;
+    }
+
+    function updateWorldVerifier(address newWorldVerifier) public ownerOnly {
+        worldVerifier = newWorldVerifier;
     }
 }

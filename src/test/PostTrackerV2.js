@@ -12,7 +12,7 @@ describe("PostTrackerV2", function() {
         const PostTracker = await ethers.getContractFactory("PostTrackerV2");
         //const postTracker = await PostTracker.deploy(ZERO_ADDRESS, []);
         //const postTracker = await PostTracker.deploy();
-        const postTracker = await PostTracker.deploy(ZERO_ADDRESS);
+        const postTracker = await PostTracker.deploy(ZERO_ADDRESS, ZERO_ADDRESS);
 
         return { postTracker, owner, otherAccount };
     }
