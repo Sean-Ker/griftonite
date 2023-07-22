@@ -13,7 +13,8 @@ module.exports = {
     chiado: {
       accounts: [
         process.env.CHIADO_PRIVATE_KEY
-      ]
+      ],
+      url: "https://rpc.chiadochain.net",
     }
   }
 };
