@@ -4,7 +4,6 @@ import { Inter } from 'next/font/google';
 import { Suspense } from 'react';
 import Nav from '../components/nav';
 
-
 const inter = Inter({ subsets: ['latin'] });
 export const metadata = {
   title: 'Griphtonite - User Dashboard',

@@ -1,7 +1,6 @@
 import { Card, Text, Title } from '@tremor/react';
-import Loading from '../components/Loading';
+import MetaMask from '../components/MetaMask';
 import Search from '../components/search';
-;
 
 export const dynamic = 'force-dynamic';
 
@@ -20,7 +19,8 @@ export default async function IndexPage({
       </Text>
       <Search />
       <Card className="mt-6">
-        <Loading />
+        {/* <Loading /> */}
+        <MetaMask />
       </Card>
     </main>
   );

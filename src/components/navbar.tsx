@@ -9,7 +9,8 @@ import { Fragment } from 'react';
 
 const navigation = [
   { name: 'Dashboard', href: '/' },
-  { name: 'Playground', href: '/playground' }
+  { name: 'New Post', href: '/thread' },
+  {name: 'Profile', href: '/profile'}
 ];
 
 function classNames(...classes: string[]) {
