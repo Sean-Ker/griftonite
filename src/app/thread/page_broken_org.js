@@ -1,8 +1,8 @@
-"use client";
 
-import { useEffect, useState } from 'react';
+
 import Web3 from 'web3';
 import { File, Web3Storage } from "web3.storage";
+import PostBlog from './post_blog';
 //var Personal = require('web3-eth-personal');
 
 const filename = "blog_" + Math.floor(Math.random() * 89999999 + 10000000) + ".md"
@@ -141,7 +141,6 @@ And here is the same code with syntax highlighting:
 </div>
 `;
 let ipfs_secret = process.env.IPFS_SECRET;
-const client = new Web3Storage({ token: ipfs_secret });
 // console.log("ipfs_secret: ", ipfs_secret);
 
 async function storeFiles(client, files) {
@@ -154,64 +153,66 @@ async function storeFiles(client, files) {
 async function contract_post(cid) {
   const infura_project_id = process.env.INFURA_PROJECT_ID;
   // const provider = new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${infura_project_id}`);
-  const provider = new Web3.providers.HttpProvider(
-    `https://linea-goerli.infura.io/v3/${infura_project_id}`
-  );
+  const provider = new Web3.providers.HttpProvider(`https://linea-goerli.infura.io/v3/${infura_project_id}`);
   const web3 = new Web3(provider);
+
+
 
   //var personal = new Personal(Personal.givenProvider);
   //Personal.unlockAccount(web3.eth.defaultAccount);
-  // web3.eth.defaultAccount = web3.eth.accounts[0];
+  web3.eth.defaultAccount = web3.eth.accounts[0];
   web3.eth.personal.unlockAccount(web3.eth.defaultAccount);
-  const abi_json = await fetch('/PostTrackerV2.json');
+  const abi_json = await fetch("/PostTrackerV2.json");
   const abi = (await abi_json.json()).abi;
-  console.log('abi_json: ', abi);
+  console.log("abi_json: ", abi)
   // const contract_address = window.ethereum.selectedAddress;
-  const contract_address =
-    '0x9725fa645dd5ce7480981237042df8718fd105e437abf3528924c2a3e555f358';
+  const contract_address = '0x9725fa645dd5ce7480981237042df8718fd105e437abf3528924c2a3e555f358';
   //Contract.setProvider()
   //web3.eth.Contract.defaultAccount = web3.eth.defaultAccount;
-  const contract = new web3.eth.Contract(abi, contract_address);
+  const contract = new web3.eth.Contract(abi, contract_address, {from: account});
   //const contract = web3.eth.contract(abi).at(contract_address);
 
-  console.log('contract: ', JSON.stringify(contract));
+  console.log("contract: ", JSON.stringify(contract));
   return contract;
 }
 
-const NewPost = () => {
-  const [loading, setLoading] = useState(false);
-  const [content, setContent] = useState(sample_md);
-  const [btnCount, setBtnCount] = useState(0);
-  const [cid, setCid] = useState(null);
 
-  useEffect(() => {
-    async function post() {
-      const blob = new Blob([content], { type: 'text/markdown' });
-      const files = [new File([blob], 'blog_post.md')];
-      const cid = await storeFiles(client, files);
-      await contract_post(cid);
-      return cid;
-    }
-    const cid = post();
-    cid && setCid(cid);
-  }, [btnCount]);
+export default async function NewPost() {
+  const markdownContent = sample_md;
 
-  return (
-    <div>
-      <h1>Upload a new post</h1>
-      {/* <textarea
+  // const accounts = await window.ethereum.request({
+  //   method: 'eth_requestAccounts'
+  // });
+  // const account = accounts[0];
+  // console.log(account);
+
+  // Create a Blob from the Markdown content
+  const blob = new Blob([markdownContent], { type: 'text/markdown' });
+
+  // Create a new FormData instance
+  // const data = new FormData();
+
+  // // Append the Blob as a file named 'file'
+  // data.append('file', blob, 'blog_post.md');
+  const files = [new File([blob], 'blog_post.md')];
+  // console.log("DATA", data);
+
+  // console.log("files: ", [data.get('file')]);
+  const client = new Web3Storage({ token: ipfs_secret });
+  // const cid = await storeFiles(client, files);
+  const cid = "bafybeiejraaattduofxapi2afikpqdnsioeaxquahddyligzddm3hj6lv4"
+
+
+    return (
+        <div>
+            <h1>Upload a new post</h1>
+            {/* <textarea
                 value={markdownContent}
                 // onChange={(e) => setMarkdownContent(e.target.value)}
                 rows={10}
           /> */}
-      <button className="border-2" onClick={() => setBtnCount(btnCount + 1)}>
-        Post
-      </button>
-      {cid && <p>IPFS CID: {cid}</p>}
-      {<p>Btn Count: {btnCount}</p>}
-      {/* {cid && <button onClick={() => contract_post(cid)} />} */}
-    </div>
-  );
+        {cid && <p>IPFS CID: {cid}</p>}
+        {cid && <PostBlog callback={() => contract_post(cid)}  />}
+      </div>
+    );
 }
-
-export default NewPost

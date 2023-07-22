@@ -2,7 +2,6 @@
 
 import Web3 from 'web3';
 import { File, Web3Storage } from "web3.storage";
-import PostBlog from './post_blog';
 //var Personal = require('web3-eth-personal');
 
 const filename = "blog_" + Math.floor(Math.random() * 89999999 + 10000000) + ".md"
@@ -156,8 +155,6 @@ async function contract_post(cid) {
   const provider = new Web3.providers.HttpProvider(`https://linea-goerli.infura.io/v3/${infura_project_id}`);
   const web3 = new Web3(provider);
 
-
-
   //var personal = new Personal(Personal.givenProvider);
   //Personal.unlockAccount(web3.eth.defaultAccount);
   web3.eth.defaultAccount = web3.eth.accounts[0];
@@ -212,7 +209,7 @@ export default async function NewPost() {
                 rows={10}
           /> */}
         {cid && <p>IPFS CID: {cid}</p>}
-        {cid && <PostBlog callback={() => contract_post(cid)}  />}
+        {cid && <button onClick={() => contract_post(cid)}/>}
       </div>
     );
 }
