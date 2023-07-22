@@ -19,9 +19,8 @@ export default async function RootLayout({
   return (
     <html lang="en" className="h-full bg-gray-50 overflow-y-scroll">
       <body className="h-full">
-        <Suspense>
-          <Nav />
-        </Suspense>
+
+
         {children}
         {/* <Toast /> */}
       </body>

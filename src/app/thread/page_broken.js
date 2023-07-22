@@ -1,4 +1,9 @@
-import { Web3Storage } from 'web3.storage'
+
+
+import Web3 from 'web3';
+import { File, Web3Storage } from "web3.storage";
+import PostBlog from './post_blog';
+//var Personal = require('web3-eth-personal');
 
 const filename = "blog_" + Math.floor(Math.random() * 89999999 + 10000000) + ".md"
 const sample_md = `
@@ -135,50 +140,79 @@ And here is the same code with syntax highlighting:
 
 </div>
 `;
-// let ipfs_secret = process.env.IPFS_SECRET;
-ipfs_secret = '265119bde305a521de0de1?4721de5a51';
+let ipfs_secret = process.env.IPFS_SECRET;
+// console.log("ipfs_secret: ", ipfs_secret);
+
+async function storeFiles(client, files) {
+  console.log('storing files: ' + files)
+  const cid = await client.put(files)
+  console.log('stored files with cid:', cid)
+  return cid
+}
+
+async function contract_post(cid) {
+  const infura_project_id = process.env.INFURA_PROJECT_ID;
+  // const provider = new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${infura_project_id}`);
+  const provider = new Web3.providers.HttpProvider(`https://linea-goerli.infura.io/v3/${infura_project_id}`);
+  const web3 = new Web3(provider);
+
+
+
+  //var personal = new Personal(Personal.givenProvider);
+  //Personal.unlockAccount(web3.eth.defaultAccount);
+  web3.eth.defaultAccount = web3.eth.accounts[0];
+  web3.eth.personal.unlockAccount(web3.eth.defaultAccount);
+  const abi_json = await fetch("/PostTrackerV2.json");
+  const abi = (await abi_json.json()).abi;
+  console.log("abi_json: ", abi)
+  // const contract_address = window.ethereum.selectedAddress;
+  const contract_address = '0x9725fa645dd5ce7480981237042df8718fd105e437abf3528924c2a3e555f358';
+  //Contract.setProvider()
+  //web3.eth.Contract.defaultAccount = web3.eth.defaultAccount;
+  const contract = new web3.eth.Contract(abi, contract_address, {from: account});
+  //const contract = web3.eth.contract(abi).at(contract_address);
+
+  console.log("contract: ", JSON.stringify(contract));
+  return contract;
+}
+
 
 export default async function NewPost() {
   const markdownContent = sample_md;
+
+  // const accounts = await window.ethereum.request({
+  //   method: 'eth_requestAccounts'
+  // });
+  // const account = accounts[0];
+  // console.log(account);
 
   // Create a Blob from the Markdown content
   const blob = new Blob([markdownContent], { type: 'text/markdown' });
 
   // Create a new FormData instance
-  const data = new FormData();
+  // const data = new FormData();
 
-  // Append the Blob as a file named 'file'
-  data.append('file', blob, 'filename.md');
-  console.log("DATA", data);
+  // // Append the Blob as a file named 'file'
+  // data.append('file', blob, 'blog_post.md');
+  const files = [new File([blob], 'blog_post.md')];
+  // console.log("DATA", data);
 
-  // POST the data using fetch
-  console.log("IPFS", ipfs_secret);
-  const response = await fetch('https://ipfs.infura.io:5001/api/v0/add?recursive=false&quiet=false&stream-channels=true', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'Basic ' + btoa(`Paris_IPFS:${ipfs_secret}`),
-  },
-    body: data,
-  });
+  // console.log("files: ", [data.get('file')]);
+  const client = new Web3Storage({ token: ipfs_secret });
+  // const cid = await storeFiles(client, files);
+  const cid = "bafybeiejraaattduofxapi2afikpqdnsioeaxquahddyligzddm3hj6lv4"
 
-  // Check the response
-  if (!response.ok) {
-    // Handle the error
-    console.error('There was an error!', response);
-  } else {
-    const jsonData = await response.json();
-    console.log('Success:', jsonData);
-  }
 
     return (
         <div>
             <h1>Upload a new post</h1>
-            {/* Markdown editor: */}
-            <textarea
+            {/* <textarea
                 value={markdownContent}
                 // onChange={(e) => setMarkdownContent(e.target.value)}
                 rows={10}
-            />
-        </div>
+          /> */}
+        {cid && <p>IPFS CID: {cid}</p>}
+        {cid && <PostBlog callback={() => contract_post(cid)}  />}
+      </div>
     );
 }

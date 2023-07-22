@@ -1,7 +1,9 @@
-"use client";
+
 
 import Web3 from 'web3';
 import { File, Web3Storage } from "web3.storage";
+import PostBlog from './post_blog';
+//var Personal = require('web3-eth-personal');
 
 const filename = "blog_" + Math.floor(Math.random() * 89999999 + 10000000) + ".md"
 const sample_md = `
@@ -149,20 +151,24 @@ async function storeFiles(client, files) {
 }
 
 async function contract_post(cid) {
-  const infura_project_id = process.env.INFURA_PROJECT_ID;
-  const provider = new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${infura_project_id}`);
-  const web3 = new Web3(provider);
+  //const infura_project_id = process.env.INFURA_PROJECT_ID;
+  // const provider = new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${infura_project_id}`);
+  //const provider = new Web3.providers.HttpProvider(`https://linea-goerli.infura.io/v3/${infura_project_id}`);
+  //const web3 = new Web3(provider);
 
-  const accounts = await ethereum.request({
-      method: "eth_requestAccounts",
-  });
-  const account = accounts[0];
-
-  const abi_json = await fetch("/PostTrackerV2.json");
-  console.log("abi_json: ", abi_json)
-  const abi = await abi_json.json();
-  const contract_address = window.ethereum.selectedAddress;
-  const contract = new web3.eth.Contract(abi, account);
+  //var personal = new Personal(Personal.givenProvider);
+  //Personal.unlockAccount(web3.eth.defaultAccount);
+  //web3.eth.defaultAccount = web3.eth.accounts[0];
+  //web3.eth.personal.unlockAccount(web3.eth.defaultAccount);
+  //const abi_json = await fetch("/PostTrackerV2.json");
+  //const abi = (await abi_json.json()).abi;
+  //console.log("abi_json: ", abi)
+  // const contract_address = window.ethereum.selectedAddress;
+  //const contract_address = '0x9725fa645dd5ce7480981237042df8718fd105e437abf3528924c2a3e555f358';
+  //Contract.setProvider()
+  //web3.eth.Contract.defaultAccount = web3.eth.defaultAccount;
+  //const contract = new web3.eth.Contract(abi, contract_address, {from: account});
+  //const contract = web3.eth.contract(abi).at(contract_address);
 
   console.log("contract: ", JSON.stringify(contract));
   return contract;
@@ -171,6 +177,12 @@ async function contract_post(cid) {
 
 export default async function NewPost() {
   const markdownContent = sample_md;
+
+  // const accounts = await window.ethereum.request({
+  //   method: 'eth_requestAccounts'
+  // });
+  // const account = accounts[0];
+  // console.log(account);
 
   // Create a Blob from the Markdown content
   const blob = new Blob([markdownContent], { type: 'text/markdown' });
@@ -192,14 +204,13 @@ export default async function NewPost() {
     return (
         <div>
             <h1>Upload a new post</h1>
-            {/* Markdown editor: */}
-            <textarea
+            {/* <textarea
                 value={markdownContent}
                 // onChange={(e) => setMarkdownContent(e.target.value)}
                 rows={10}
-          />
+          /> */}
         {cid && <p>IPFS CID: {cid}</p>}
-        {cid && <button onClick={() => contract_post(cid)}>Post to contract</button>}
+        {cid && <PostBlog callback={() => contract_post(cid)}  />}
       </div>
     );
 }
