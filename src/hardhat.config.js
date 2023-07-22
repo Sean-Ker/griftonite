@@ -8,7 +8,8 @@ module.exports = {
     sepolia: {
       accounts: [
         process.env.SEPOLIA_PRIVATE_KEY
-      ]
+      ],
+      url: "https://sepolia.infura.io/v3/"+process.env.INFURA_SECRET
     },
     chiado: {
       accounts: [
