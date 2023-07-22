@@ -7,7 +7,12 @@ module.exports = {
   networks: {
     sepolia: {
       accounts: [
-        process.env.ETH_PRIVATE_KEY
+        process.env.SEPOLIA_PRIVATE_KEY
+      ]
+    },
+    chiado: {
+      accounts: [
+        process.env.CHIADO_PRIVATE_KEY
       ]
     }
   }
