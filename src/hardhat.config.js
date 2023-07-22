@@ -27,7 +27,8 @@ module.exports = {
       accounts: [
         process.env.SEPOLIA_PRIVATE_KEY
       ],
-      url: "https://devnet.neonevm.org"
+      url: "https://devnet.neonevm.org",
+      chainId: 245022926
     },
     zkevmtest: {
       accounts: [
