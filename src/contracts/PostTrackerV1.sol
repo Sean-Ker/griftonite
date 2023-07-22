@@ -14,6 +14,14 @@ contract PostTrackerV1{
         string uid;
     }
 
+    struct Chain {
+        uint32 destinationDomain;
+        address target;
+    }
+
+    Chain[] chains;
+    address interchainQueryRouter;
+
     // retarded solution: thread heads will just be handled in a mapping from uint => string (which retrieves Post)
     // and then to go through all threads we just iterate until the first post UID is 0
 
@@ -56,4 +64,30 @@ contract PostTrackerV1{
         }
         return posts;
     }
+    // TODO: new function that uses EAS
+    // TODO: constructor. Used to set owner, and list of chains that will be queried
+    // TODO: add function to add and remove other chains to query. Query the other chains with hyperlane.
+
+    // logic: in constructor, pass InterchainQueryRouter address
+    // if this address is 0, then don't do anything extra beyond what's already written
+    // if this address is not zero, then for each entry in the list of targets make the same query and add to results
+    // note that we can no longer simply index as before when adding posts, because then we end up with two posts on different chains
+    // with the same serial number. 
+    // TO SOLVE ABOVE: in both newPost functions, first get the numPostsInThread and numThreads from all chains and take the largest one.
+    // ALSO, when running getPostsInThread and getNumThreads we'll need to query the other chains via Hyperlane
+    /*constructor(address _interchainQueryRouter, Chain[] memory _chains){
+        // throws error of "Copying of type struct PostTrackerV1.Chain memory[] memory to storage not yet supported."
+        //chains = new Chain[](_chains.length);
+        for (uint chainInd=0; chainInd < _chains.length; ++chainInd){
+            // this works instead, but about as far from elegant as it could be.
+            chains.push();
+            chains[chainInd].destinationDomain = _chains[chainInd].destinationDomain;
+        }
+        interchainQueryRouter = _interchainQueryRouter;
+    }
+    */
+
+   // today I realized we don't actually need to do any crazy cross-chain stuff to just qualify for all the blockchains (only Celo).
+   // Therefore I'm just creating a constructor that takes in a schema to implement the EAS stuff
+   // actually not even that because I can't figure out how to make attestations from contracts; the docs are simply for the javascript SDK
 }

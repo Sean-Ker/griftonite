@@ -7,8 +7,10 @@ const { expect } = require("chai");
 
 describe("PostTrackerV1", function() {
     async function deployEmpty() {
+        const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
         const [owner, otherAccount] = await ethers.getSigners();
         const PostTracker = await ethers.getContractFactory("PostTrackerV1");
+        //const postTracker = await PostTracker.deploy(ZERO_ADDRESS, []);
         const postTracker = await PostTracker.deploy();
 
         return { postTracker, owner, otherAccount };
