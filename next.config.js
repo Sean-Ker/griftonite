@@ -6,6 +6,9 @@ const nextConfig = {
   },
   experimental: {
     serverComponentsExternalPackages: ['@tremor/react']
+  },
+  env:{
+    IPFS_SECRET: process.env.IPFS_SECRET
   }
 };
 

@@ -1,7 +1,4 @@
-"use client";
-
-// require('dotenv').config({path: __dirname+'/./../../../.env'});
-import { File, Web3Storage } from "web3.storage";
+import { Web3Storage } from 'web3.storage'
 
 const filename = "blog_" + Math.floor(Math.random() * 89999999 + 10000000) + ".md"
 const sample_md = `
@@ -138,21 +135,8 @@ And here is the same code with syntax highlighting:
 
 </div>
 `;
-let ipfs_secret = process.env.IPFS_SECRET;
-// console.log("ipfs_secret: ", ipfs_secret);
-
-async function storeFiles(client, files) {
-  console.log('storing files: ' + files)
-  const cid = await client.put(files)
-  console.log('stored files with cid:', cid)
-  return cid
-}
-
-async function contract_post(cid) {
-  // let contract = new
-  return cid;
-}
-
+// let ipfs_secret = process.env.IPFS_SECRET;
+ipfs_secret = '265119bde305a521de0de1?4721de5a51';
 
 export default async function NewPost() {
   const markdownContent = sample_md;
@@ -161,18 +145,30 @@ export default async function NewPost() {
   const blob = new Blob([markdownContent], { type: 'text/markdown' });
 
   // Create a new FormData instance
-  // const data = new FormData();
+  const data = new FormData();
 
-  // // Append the Blob as a file named 'file'
-  // data.append('file', blob, 'blog_post.md');
-  const files = [new File([blob], 'blog_post.md')];
-  // console.log("DATA", data);
+  // Append the Blob as a file named 'file'
+  data.append('file', blob, 'filename.md');
+  console.log("DATA", data);
 
-  // console.log("files: ", [data.get('file')]);
-  const client = new Web3Storage({ token: ipfs_secret });
-  // const cid = await storeFiles(client, files);
-  const cid = "bafybeiejraaattduofxapi2afikpqdnsioeaxquahddyligzddm3hj6lv4"
+  // POST the data using fetch
+  console.log("IPFS", ipfs_secret);
+  const response = await fetch('https://ipfs.infura.io:5001/api/v0/add?recursive=false&quiet=false&stream-channels=true', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic ' + btoa(`Paris_IPFS:${ipfs_secret}`),
+  },
+    body: data,
+  });
 
+  // Check the response
+  if (!response.ok) {
+    // Handle the error
+    console.error('There was an error!', response);
+  } else {
+    const jsonData = await response.json();
+    console.log('Success:', jsonData);
+  }
 
     return (
         <div>
@@ -182,9 +178,7 @@ export default async function NewPost() {
                 value={markdownContent}
                 // onChange={(e) => setMarkdownContent(e.target.value)}
                 rows={10}
-        />
-        {cid && <p>IPFS CID: {cid}</p>
-        }
+            />
         </div>
     );
 }

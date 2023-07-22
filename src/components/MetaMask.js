@@ -13,22 +13,22 @@ const CheckMetaMask = ({ children }) => {
     }
   }, []);
 
-  if (!isMetaMaskInstalled) {
-    return (
-      <div>
-        <p>MetaMask is not installed. Please install it to continue.</p>
-        <button
-          className="btn btn-primary border-black border-2 bg-black text-white rounded-md p-2"
-          onClick={() =>
-            window.open('https://metamask.io/download.html', '_blank')
-          }
-        >
-          Install MetaMask
-        </button>
+//   if (!isMetaMaskInstalled) {
+//     return (
+//       <div>
+//         <p>MetaMask is not installed. Please install it to continue.</p>
+//         <button
+//           className="btn btn-primary border-black border-2 bg-black text-white rounded-md p-2"
+//           onClick={() =>
+//             window.open('https://metamask.io/download.html', '_blank')
+//           }
+//         >
+//           Install MetaMask
+//         </button>
 
-      </div>
-    );
-  }
+//       </div>
+//     );
+//   }
 
   return children;
 };

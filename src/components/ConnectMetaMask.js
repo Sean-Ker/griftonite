@@ -24,6 +24,9 @@ export default function ConnectMetaMask({account, setAccount}) {
 
   useEffect(() => {
     const MMSDK = new MetaMaskSDK(options);
+    // ethereum
+    // Get provider:
+    // const provider = MMSDK.getProvider();
     const ethereum = window.ethereum;
     ethereum && setEthereum(ethereum);
   }, []);
