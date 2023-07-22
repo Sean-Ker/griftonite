@@ -35,6 +35,12 @@ module.exports = {
         process.env.SEPOLIA_PRIVATE_KEY
       ],
       url: "https://rpc.public.zkevm-test.net"
+    },
+    goerli: {
+      accounts: [
+        process.env.SEPOLIA_PRIVATE_KEY
+      ],
+      url: "https://goerli.blockpi.network/v1/rpc/public"
     }
   }
 };
