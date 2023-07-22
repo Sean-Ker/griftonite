@@ -16,6 +16,24 @@ module.exports = {
         process.env.CHIADO_PRIVATE_KEY
       ],
       url: "https://rpc.chiadochain.net",
+    },
+    lineatest: {
+      accounts: [
+        process.env.SEPOLIA_PRIVATE_KEY
+      ],
+      url: "https://linea-goerli.infura.io/v3/"+process.env.INFURA_SECRET
+    },
+    neondevnet: {
+      accounts: [
+        process.env.SEPOLIA_PRIVATE_KEY
+      ],
+      url: "https://devnet.neonevm.org"
+    },
+    zkevmtest: {
+      accounts: [
+        process.env.SEPOLIA_PRIVATE_KEY
+      ],
+      url: "https://rpc.public.zkevm-test.net"
     }
   }
 };
