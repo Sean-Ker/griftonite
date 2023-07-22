@@ -24,9 +24,7 @@ export default function ConnectMetaMask({account, setAccount}) {
 
   useEffect(() => {
     const MMSDK = new MetaMaskSDK(options);
-    // ethereum
-    // Get provider:
-    // const provider = MMSDK.getProvider();
+    // Get ethereum provider:
     const ethereum = window.ethereum;
     ethereum && setEthereum(ethereum);
   }, []);
@@ -34,7 +32,7 @@ export default function ConnectMetaMask({account, setAccount}) {
   async function connectToMetaMask() {
     setIsLoading(true);
     try {
-      const accounts = await window.ethereum.request({
+      const accounts = await ethereum.request({
         method: 'eth_requestAccounts'
       });
       console.log(accounts);

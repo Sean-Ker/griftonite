@@ -1,6 +1,6 @@
 "use client";
 
-// require('dotenv').config({path: __dirname+'/./../../../.env'});
+import Web3 from 'web3';
 import { File, Web3Storage } from "web3.storage";
 
 const filename = "blog_" + Math.floor(Math.random() * 89999999 + 10000000) + ".md"
@@ -149,8 +149,23 @@ async function storeFiles(client, files) {
 }
 
 async function contract_post(cid) {
-  // let contract = new
-  return cid;
+  const infura_project_id = process.env.INFURA_PROJECT_ID;
+  const provider = new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${infura_project_id}`);
+  const web3 = new Web3(provider);
+
+  const accounts = await ethereum.request({
+      method: "eth_requestAccounts",
+  });
+  const account = accounts[0];
+
+  const abi_json = await fetch("/PostTrackerV2.json");
+  console.log("abi_json: ", abi_json)
+  const abi = await abi_json.json();
+  const contract_address = window.ethereum.selectedAddress;
+  const contract = new web3.eth.Contract(abi, account);
+
+  console.log("contract: ", JSON.stringify(contract));
+  return contract;
 }
 
 
@@ -182,9 +197,9 @@ export default async function NewPost() {
                 value={markdownContent}
                 // onChange={(e) => setMarkdownContent(e.target.value)}
                 rows={10}
-        />
-        {cid && <p>IPFS CID: {cid}</p>
-        }
-        </div>
+          />
+        {cid && <p>IPFS CID: {cid}</p>}
+        {cid && <button onClick={() => contract_post(cid)}>Post to contract</button>}
+      </div>
     );
 }

@@ -8,7 +8,8 @@ const nextConfig = {
     serverComponentsExternalPackages: ['@tremor/react']
   },
   env:{
-    IPFS_SECRET: process.env.IPFS_SECRET
+    IPFS_SECRET: process.env.IPFS_SECRET,
+    INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID
   }
 };
 
