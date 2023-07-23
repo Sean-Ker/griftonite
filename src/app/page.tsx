@@ -1,5 +1,4 @@
-import { Card, Text, Title } from '@tremor/react';
-import MetaMask from '../components/MetaMask';
+import { Card } from '@tremor/react';
 import Search from '../components/search';
 
 export const dynamic = 'force-dynamic';
@@ -10,17 +9,19 @@ export default async function IndexPage({
   searchParams: { q: string };
 }) {
   const search = searchParams.q ?? '';
+  // const account = window.ethereum ? window.ethereum.selectedAddress : null;
 
   return (
     <main className="p-4 md:p-10 mx-auto max-w-7xl">
-      <Title>Users</Title>
+      {/* <Title>Users</Title>
       <Text>
         A list of users retrieved from a MySQL database (PlanetScale).
-      </Text>
+      </Text> */}
       <Search />
       <Card className="mt-6">
         {/* <Loading /> */}
-        <MetaMask />
+        {/* Account: {account} */}
+
       </Card>
     </main>
   );
