@@ -172,8 +172,9 @@ async function contract_post(cid) {
   // const contract_address = window.ethereum.selectedAddress;
   // const contract_address =
   //   '0x9725fa645dd5ce7480981237042df8718fd105e437abf3528924c2a3e555f358';
-  const contract_address =
-    '0xa36edC2b87f0277c9c678475416452Cf0c7f280a';
+  // const contract_address =
+  //   '0xa36edC2b87f0277c9c678475416452Cf0c7f280a';
+  const contract_address = '0x82ffc25dd541989790d147a4cf3f26daaa16c809';
   //Contract.setProvider()
   //web3.eth.Contract.defaultAccount = web3.eth.defaultAccount;
   // const contract = new web3.eth.Contract(abi, contract_address);
