@@ -1,39 +1,32 @@
 'use client';
 
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import { usePathname, useRouter } from 'next/navigation';
-import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function Search({ disabled }: { disabled?: boolean }) {
-  const { replace } = useRouter();
-  const pathname = usePathname();
-  const [isPending, startTransition] = useTransition();
+  const { push } = useRouter();
+  const [term, setTerm] = useState('');
+  const [isPending, setIsPending] = useState(false);
 
-  function handleSearch(term: string) {
-    const params = new URLSearchParams(window.location.search);
+  function handleSearch() {
     if (term) {
-      params.set('q', term);
-    } else {
-      params.delete('q');
+      setIsPending(true);
+      push(`/profile/${term}`);
     }
-
-    startTransition(() => {
-      replace(`${pathname}?${params.toString()}`);
-    });
   }
-
   return (
-    <div className="relative mt-5 max-w-md">
+    <div className="relative mt-5 max-w-3lg">
       <label htmlFor="search" className="sr-only">
-        Search
+        Search EVM Address
       </label>
-      <div className="rounded-md shadow-sm">
+      <div className="rounded-lg shadow-sm flex">
         <div
           className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
           aria-hidden="true"
         >
           <MagnifyingGlassIcon
-            className="mr-3 h-4 w-4 text-gray-400"
+            className="mr-3 h-6 w-6 text-gray-400"
             aria-hidden="true"
           />
         </div>
@@ -42,11 +35,18 @@ export default function Search({ disabled }: { disabled?: boolean }) {
           name="search"
           id="search"
           disabled={disabled}
-          className="h-10 block w-full rounded-md border border-gray-200 pl-9 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="h-14 block w-full rounded-l-lg border border-gray-200 pl-12 focus:border-indigo-500 focus:ring-indigo-500 text-xl"
           placeholder="Search by name..."
           spellCheck={false}
-          onChange={(e) => handleSearch(e.target.value)}
+          onChange={(e) => setTerm(e.target.value)}
         />
+        <button
+          onClick={handleSearch}
+          className="bg-indigo-500 text-white rounded-r-lg px-4 font-bold text-xl disabled:opacity-50"
+          disabled={disabled || isPending}
+        >
+          Search
+        </button>
       </div>
 
       {isPending && (
