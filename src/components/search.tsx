@@ -9,6 +9,8 @@ export default function Search({ disabled }: { disabled?: boolean }) {
   const [term, setTerm] = useState('');
   const [isPending, setIsPending] = useState(false);
 
+
+
   function handleSearch() {
     if (term) {
       setIsPending(true);
@@ -36,7 +38,7 @@ export default function Search({ disabled }: { disabled?: boolean }) {
           id="search"
           disabled={disabled}
           className="h-14 block w-full rounded-l-lg border border-gray-200 pl-12 focus:border-indigo-500 focus:ring-indigo-500 text-xl"
-          placeholder="Search by name..."
+          placeholder="Search EVM Address..."
           spellCheck={false}
           onChange={(e) => setTerm(e.target.value)}
         />

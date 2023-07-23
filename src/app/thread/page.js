@@ -1,10 +1,13 @@
 "use client";
 
+import { Card } from '@tremor/react';
+import { Button, Typography } from "antd";
+import { ethers } from "ethers";
 import { useEffect, useState } from 'react';
-import Web3 from 'web3';
 import { File, Web3Storage } from "web3.storage";
-import {BigNumber, ethers} from "ethers";
-//var Personal = require('web3-eth-personal');
+
+const {Text, Title} = Typography;
+
 
 const filename = "blog_" + Math.floor(Math.random() * 89999999 + 10000000) + ".md"
 const sample_md = `
@@ -186,7 +189,7 @@ async function contract_post(cid) {
   console.log(signerAddr);
   console.log("content ID: ", cid);
   //contract.newPost(cid, signerAddr);
-  // just to test, I'm using the 
+  // just to test, I'm using the
   contract.newPost(cid, signerAddr, {gasLimit: 10000000});
 
   //console.log('contract: ', JSON.stringify(contract));
@@ -207,25 +210,29 @@ const NewPost = () => {
       await contract_post(cid);
       return cid;
     }
-    const cid = post();
-    cid && setCid(cid);
+    if (btnCount > 0) {
+      const cid = post();
+      cid && setCid(cid);
+    }
   }, [btnCount]);
 
   return (
-    <div>
-      <h1>Upload a new post</h1>
-      {/* <textarea
-                value={markdownContent}
-                // onChange={(e) => setMarkdownContent(e.target.value)}
-                rows={10}
-          /> */}
-      <button className="border-2" onClick={() => setBtnCount(btnCount + 1)}>
-        Post
-      </button>
-      {cid && <p>IPFS CID: {cid}</p>}
-      {<p>Btn Count: {btnCount}</p>}
-      {/* {cid && <button onClick={() => contract_post(cid)} />} */}
-    </div>
+    <Card className="mt-6 p-4 md:p-10 mx-auto flex justify-left inset-0 max-w-5xl bg-gradient-to-b from-gray-100 to-gray-200 shadow-lg">
+      <div className="flex flex-col justify-center items-left">
+        <Title level={1}>New Post</Title>
+
+      </div>
+      {/* {cid && <p>IPFS CID: {cid}</p>} */}
+        {/* {cid && <button onClick={() => contract_post(cid)} />} */}
+        {/* {<p>Btn Count: {btnCount}</p>} */}
+        <Button
+          type="primary"
+          className="border-2"
+          onClick={() => setBtnCount(btnCount + 1)}
+        >
+          Post
+        </Button>
+    </Card>
   );
 }
 

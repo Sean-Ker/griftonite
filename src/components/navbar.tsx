@@ -1,7 +1,8 @@
-"use client"
+'use client';
 
 import { Disclosure } from '@headlessui/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import MetaMask from './MetaMask'; // Import the MetaMask component
 
@@ -17,7 +18,6 @@ function classNames(...classes: string[]) {
 export default function Navbar({ user }: { user: any }) {
   const pathname = usePathname();
   // const metamask_connection = window.ethereum.isConnected() ? ;
-
 
   return (
     <Disclosure as="nav" className="bg-white shadow-sm">
@@ -45,9 +45,11 @@ export default function Navbar({ user }: { user: any }) {
               </div>
               <div className="flex items-center">
                 {/* MetaMask button with some top padding */}
-                { <div className="mr-3">
-                  <MetaMask />
-                </div>}
+                {
+                  <div className="mr-3">
+                    <MetaMask />
+                  </div>
+                }
 
                 {/* User profile picture */}
                 <Image
@@ -58,9 +60,7 @@ export default function Navbar({ user }: { user: any }) {
                   alt={`${user?.name || 'placeholder'} avatar`}
                   priority={false}
                 />
-
-                {/* Profile link */}
-                <a
+                <Link
                   href="/profile"
                   className={classNames(
                     pathname === '/profile'
@@ -71,7 +71,7 @@ export default function Navbar({ user }: { user: any }) {
                   aria-current={pathname === '/profile' ? 'page' : undefined}
                 >
                   Profile
-                </a>
+                </Link>
               </div>
             </div>
             {/* Remaining code stays the same */}
