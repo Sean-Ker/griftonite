@@ -161,7 +161,7 @@ async function contract_post(cid) {
 
   //var personal = new Personal(Personal.givenProvider);
   //Personal.unlockAccount(web3.eth.defaultAccount);
-  // web3.eth.defaultAccount = web3.eth.accounts[0];
+  web3.eth.defaultAccount = web3.eth.accounts[0];
   web3.eth.personal.unlockAccount(web3.eth.defaultAccount);
   const abi_json = await fetch('/PostTrackerV2.json');
   const abi = (await abi_json.json()).abi;
@@ -171,8 +171,9 @@ async function contract_post(cid) {
     '0x9725fa645dd5ce7480981237042df8718fd105e437abf3528924c2a3e555f358';
   //Contract.setProvider()
   //web3.eth.Contract.defaultAccount = web3.eth.defaultAccount;
+  // const contract = new web3.eth.Contract(abi, contract_address);
   const contract = new web3.eth.Contract(abi, contract_address);
-  //const contract = web3.eth.contract(abi).at(contract_address);
+  // const contract = web3.eth.Contract(abi).at(contract_address);
 
   console.log('contract: ', JSON.stringify(contract));
   return contract;
