@@ -6,7 +6,7 @@ import Nav from '../components/nav';
 
 const inter = Inter({ subsets: ['latin'] });
 export const metadata = {
-  title: 'Griphtonite - User Dashboard',
+  title: 'Griftonite - User Dashboard',
   description:
     'A dashboard for posting blog-posts, comments and more.'
 };
