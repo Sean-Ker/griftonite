@@ -85,8 +85,8 @@ const NewPost = () => {
       const files = [new File([blob], filename)];
       const cid = await storeFiles(client, files);
       console.log('cid: ', cid);
-      await contract_post(cid);
-      push(`/thread/${cid}`);
+      const contract = await contract_post(cid);
+      cid && contract && push(`/thread/${cid}`);
       return cid;
     }
     if (btnCount > 0) {
@@ -107,12 +107,7 @@ const NewPost = () => {
         </div>
 
         {/* New Blog Post */}
-        <MDEditor
-          value={content}
-          onChange={setContent}
-          height={500}
-
-        />
+        <MDEditor value={content} onChange={setContent} height={500} />
 
         <Space />
         <Button
