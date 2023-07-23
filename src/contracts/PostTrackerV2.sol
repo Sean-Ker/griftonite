@@ -76,7 +76,7 @@ contract PostTrackerV2{
         return newPostObj;
     }
 
-    function newReview(string calldata _cid, address _account, uint threadNum, bytes32 _attestationUID)
+    function newReview(string calldata _cid, address _account, uint threadNum, bytes32 _attestationUID) 
     public attestationRecipient(msg.sender, _account, _attestationUID) returns (Post memory){
         Post storage newPostObj = postObj[_account][threadNum][numPostsInThread[_account][threadNum]];
         newPostObj.cid = _cid;
@@ -108,7 +108,7 @@ contract PostTrackerV2{
         return numThreadsUnderAddr[_account];
     }
 
-    function    (address _account, uint _thread) public view returns (Post[] memory) {
+    function getPostsInThread(address _account, uint _thread) public view returns (Post[] memory) {
         Post[] memory posts = new Post[](numPostsInThread[_account][_thread]);
         for(uint postnum=0; postnum < numPostsInThread[_account][_thread]; postnum++) {
             posts[postnum] = postObj[_account][_thread][postnum];
