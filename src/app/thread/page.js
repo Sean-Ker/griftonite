@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Web3 from 'web3';
 import { File, Web3Storage } from "web3.storage";
+import {BigNumber, ethers} from "ethers";
 //var Personal = require('web3-eth-personal');
 
 const filename = "blog_" + Math.floor(Math.random() * 89999999 + 10000000) + ".md"
@@ -145,37 +146,49 @@ const client = new Web3Storage({ token: ipfs_secret });
 // console.log("ipfs_secret: ", ipfs_secret);
 
 async function storeFiles(client, files) {
-  console.log('storing files: ' + files)
-  const cid = await client.put(files)
-  console.log('stored files with cid:', cid)
-  return cid
+  console.log('storing files: ' + files);
+  const cid = await client.put(files);
+  console.log('stored files with cid:', cid);
+  return cid;
 }
 
 async function contract_post(cid) {
-  const infura_project_id = process.env.INFURA_PROJECT_ID;
+  // const infura_project_id = process.env.INFURA_PROJECT_ID;
   // const provider = new Web3.providers.HttpProvider(`https://mainnet.infura.io/v3/${infura_project_id}`);
-  const provider = new Web3.providers.HttpProvider(
-    `https://linea-goerli.infura.io/v3/${infura_project_id}`
-  );
-  const web3 = new Web3(provider);
+  // const provider = new Web3.providers.HttpProvider(
+  //   `https://linea-goerli.infura.io/v3/${infura_project_id}`
+  // );
+  // const web3 = new Web3(provider);
 
   //var personal = new Personal(Personal.givenProvider);
   //Personal.unlockAccount(web3.eth.defaultAccount);
-  web3.eth.defaultAccount = web3.eth.accounts[0];
-  web3.eth.personal.unlockAccount(web3.eth.defaultAccount);
+  //web3.eth.defaultAccount = web3.eth.accounts[0];
+  //web3.eth.personal.unlockAccount(web3.eth.defaultAccount);
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
   const abi_json = await fetch('/PostTrackerV2.json');
   const abi = (await abi_json.json()).abi;
   console.log('abi_json: ', abi);
   // const contract_address = window.ethereum.selectedAddress;
+  // const contract_address =
+  //   '0x9725fa645dd5ce7480981237042df8718fd105e437abf3528924c2a3e555f358';
   const contract_address =
-    '0x9725fa645dd5ce7480981237042df8718fd105e437abf3528924c2a3e555f358';
+    '0xa36edC2b87f0277c9c678475416452Cf0c7f280a';
   //Contract.setProvider()
   //web3.eth.Contract.defaultAccount = web3.eth.defaultAccount;
   // const contract = new web3.eth.Contract(abi, contract_address);
-  const contract = new web3.eth.Contract(abi, contract_address);
+  //const contract = new web3.eth.Contract(abi, contract_address);
   // const contract = web3.eth.Contract(abi).at(contract_address);
+  const contract = new ethers.Contract(contract_address, abi, signer);
 
-  console.log('contract: ', JSON.stringify(contract));
+  const signerAddr = await signer.getAddress();
+  console.log(signerAddr);
+  console.log("content ID: ", cid);
+  //contract.newPost(cid, signerAddr);
+  // just to test, I'm using the 
+  contract.newPost(cid, signerAddr, {gasLimit: 10000000});
+
+  //console.log('contract: ', JSON.stringify(contract));
   return contract;
 }
 
