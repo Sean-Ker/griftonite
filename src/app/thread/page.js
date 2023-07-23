@@ -207,8 +207,10 @@ const NewPost = () => {
       await contract_post(cid);
       return cid;
     }
-    const cid = post();
-    cid && setCid(cid);
+    if (btnCount > 0) {
+      const cid = post();
+      cid && setCid(cid);
+    }
   }, [btnCount]);
 
   return (
