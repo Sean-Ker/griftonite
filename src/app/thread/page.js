@@ -167,6 +167,7 @@ async function contract_post(cid) {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
   const abi_json = await fetch('/PostTrackerV2.json');
+  const contractslist = await (await fetch("/ContractLookup.json")).json()
   const abi = (await abi_json.json()).abi;
   console.log('abi_json: ', abi);
   // const contract_address = window.ethereum.selectedAddress;
@@ -174,7 +175,9 @@ async function contract_post(cid) {
   //   '0x9725fa645dd5ce7480981237042df8718fd105e437abf3528924c2a3e555f358';
   // const contract_address =
   //   '0xa36edC2b87f0277c9c678475416452Cf0c7f280a';
-  const contract_address = '0x82ffc25dd541989790d147a4cf3f26daaa16c809';
+  //const contract_address = '0x82ffc25dd541989790d147a4cf3f26daaa16c809';
+  const contract_address = contractslist[(((await provider.getNetwork()).chainId).toString())];
+  console.log(contract_address)
   //Contract.setProvider()
   //web3.eth.Contract.defaultAccount = web3.eth.defaultAccount;
   // const contract = new web3.eth.Contract(abi, contract_address);
